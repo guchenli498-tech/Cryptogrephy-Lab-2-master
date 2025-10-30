@@ -121,46 +121,45 @@ public class SimpleSAES {
     }
     
     /**
-     * 列混淆
+     * 列混淆 (列主序实现)
      */
     private static String mixColumns(String input) {
+        // 列主序：s00, s10, s01, s11
         int s00 = Integer.parseInt(input.substring(0, 4), 2);
-        int s01 = Integer.parseInt(input.substring(4, 8), 2);
-        int s10 = Integer.parseInt(input.substring(8, 12), 2);
+        int s10 = Integer.parseInt(input.substring(4, 8), 2);
+        int s01 = Integer.parseInt(input.substring(8, 12), 2);
         int s11 = Integer.parseInt(input.substring(12, 16), 2);
-        
-        int s00_new = s00 ^ gfMultiply(4, s10);
-        int s01_new = s01 ^ gfMultiply(4, s11);
-        int s10_new = gfMultiply(4, s00) ^ s10;
-        int s11_new = gfMultiply(4, s01) ^ s11;
-        
-        String result = padBinary(Integer.toBinaryString(s00_new), 4);
-        result += padBinary(Integer.toBinaryString(s01_new), 4);
-        result += padBinary(Integer.toBinaryString(s10_new), 4);
-        result += padBinary(Integer.toBinaryString(s11_new), 4);
-        
+
+        int new_s00 = s00 ^ gfMultiply(4, s10);
+        int new_s10 = gfMultiply(4, s00) ^ s10;
+        int new_s01 = s01 ^ gfMultiply(4, s11);
+        int new_s11 = gfMultiply(4, s01) ^ s11;
+
+        String result = padBinary(Integer.toBinaryString(new_s00), 4);
+        result += padBinary(Integer.toBinaryString(new_s10), 4);
+        result += padBinary(Integer.toBinaryString(new_s01), 4);
+        result += padBinary(Integer.toBinaryString(new_s11), 4);
         return result;
     }
     
     /**
-     * 逆列混淆
+     * 逆列混淆 (列主序实现)
      */
     private static String invMixColumns(String input) {
         int s00 = Integer.parseInt(input.substring(0, 4), 2);
-        int s01 = Integer.parseInt(input.substring(4, 8), 2);
-        int s10 = Integer.parseInt(input.substring(8, 12), 2);
+        int s10 = Integer.parseInt(input.substring(4, 8), 2);
+        int s01 = Integer.parseInt(input.substring(8, 12), 2);
         int s11 = Integer.parseInt(input.substring(12, 16), 2);
-        
+
         int s00_new = gfMultiply(9, s00) ^ gfMultiply(2, s10);
-        int s01_new = gfMultiply(9, s01) ^ gfMultiply(2, s11);
         int s10_new = gfMultiply(2, s00) ^ gfMultiply(9, s10);
+        int s01_new = gfMultiply(9, s01) ^ gfMultiply(2, s11);
         int s11_new = gfMultiply(2, s01) ^ gfMultiply(9, s11);
-        
+
         String result = padBinary(Integer.toBinaryString(s00_new), 4);
-        result += padBinary(Integer.toBinaryString(s01_new), 4);
         result += padBinary(Integer.toBinaryString(s10_new), 4);
+        result += padBinary(Integer.toBinaryString(s01_new), 4);
         result += padBinary(Integer.toBinaryString(s11_new), 4);
-        
         return result;
     }
     
